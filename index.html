@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Webpack App</title>
+        <style>
+            .canvasDisplay{
+                width: 100%;
+                height: 100%;
+                background-color: #000;
+            }
+
+            body, html {
+                padding: 0;
+                margin: 0;
+            }
+        </style>
+        <script  id="vertex-shader-3d" type="x-shader/x-vertex">
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+            }
+        </script>
+        <script  id="fragment-shader-3d" type="x-shader/x-fragment">
+            uniform vec3 pos;
+            uniform vec4 clipRect;
+            uniform sampler2D texture1;
+            varying vec2 vUv;
+            void main() {
+                vec2 uv = vUv;
+                
+                vec4 tex = texture2D( texture1, uv );
+                gl_FragColor = tex;
+            }
+        </script>
+    </head>
+    <body>
+        <canvas id="canvas" class="canvasDisplay"></canvas>
+    </body>
+    
+</html>
