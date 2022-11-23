@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { BoxGeometry, Mesh, ObjectLoader, PlaneGeometry, ShaderMaterial } from 'three';
-import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
+import { AmbientLight, BoxGeometry, Mesh, ObjectLoader, PlaneGeometry, ShaderMaterial } from 'three';
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 //fire source: https://opengameart.org/content/animated-fire
 class Fire {
     material: ShaderMaterial
@@ -9,7 +9,7 @@ class Fire {
     selectedSpriteY = 0
 
     doUpdateTick = 0
-    constructor(geometry: PlaneGeometry, camera: THREE.Camera) {
+    constructor(geometry: PlaneGeometry, scene: THREE.Scene) {
    
         // fire animation from sprite sheet. The sprite sheet is 10x6 tiles, each tile is 64x64 pixels
         const texture = new THREE.TextureLoader().load( "/textures/fire.png" )
@@ -82,15 +82,26 @@ class Fire {
             }
             this.material.uniforms.spriteSelected.value = new THREE.Vector2(this.selectedSpriteX, this.selectedSpriteY)
             this.mesh.lookAt(camera.position)
-            console.log(this.selectedSpriteX, this.selectedSpriteY)
             this.doUpdateTick = 0
         }
+    }
 
-
-
-
-
-        }
+    const loader = new GLTFLoader();
+    const ambientLight = new AmbientLight(0xFFFFFF);
+    ambientLight.intensity = 2;
+    scene.add( ambientLight );
+    loader.load( '/textures/firepit3.glb', function ( gltf:GLTF ) {
+    
+        gltf.scene.scale.set(0.02,0.02,0.02)
+        gltf.scene.position.set(-2,-0.25,0)
+        scene.add( gltf.scene );
+    
+    }, undefined, function ( error:any ) {
+    
+        console.error( error );
+    
+    } );
+        
 
 
         

@@ -10,22 +10,16 @@ addEventListener('keypress', (event) => {});
 
 const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 2000)
 camera.position.z = 1;
-let dx = degToRad(90);
-let dy = degToRad(90);
-let pos = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
-
-function Reset(){
-    let v = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
-    camera.projectionMatrix = new THREE.Matrix4();
-    camera.rotateY(dy);
-    camera.rotateX(dx);
-}
+let dx = degToRad(0);
+let dy = degToRad(0);
 
 onkeydown = function ( event ) {
 
     switch ( event.code ) {
         case 'KeyW': 
+        camera.rotateX(dx*-1);
         camera.translateZ(-.1);
+        camera.rotateX(dx);
         break;
 
         case 'KeyA': 
@@ -33,7 +27,9 @@ onkeydown = function ( event ) {
         break;
 
         case 'KeyS': 
+        camera.rotateX(dx*-1);
         camera.translateZ(.1);
+        camera.rotateX(dx);
         break;
 
         case 'KeyD': 
@@ -41,12 +37,16 @@ onkeydown = function ( event ) {
         break;
 
         case 'KeyE': 
+        camera.rotateX(dx*-1);
         camera.rotateY(degToRad(-5));
+        camera.rotateX(dx);
         dy-=degToRad(5);
         break;
 
         case 'KeyQ': 
+        camera.rotateX(dx*-1);
         camera.rotateY(degToRad(5));
+        camera.rotateX(dx);
         dy+=degToRad(5);
         break;
 
@@ -75,7 +75,7 @@ const mesh = new THREE.Mesh( geometry, material );
 scene.add( mesh );
 
 const geometry2 = new THREE.PlaneGeometry( 0.5, 0.5 );
-const fire = new Fire(geometry2, camera)
+const fire = new Fire(geometry2, scene)
 scene.add(fire.getMesh())
 
 let materialArray = [];
