@@ -30,7 +30,7 @@
             void main() {
                 vec2 uv = vUv;
                 
-                vec4 tex = texture2D( texture1, uv );
+                vec4 tex = texture2D( texture1, uv * 9.0 );
                 gl_FragColor = tex;
             }
         </script>
