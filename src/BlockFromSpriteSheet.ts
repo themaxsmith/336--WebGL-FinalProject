@@ -1,20 +1,26 @@
 import * as THREE from 'three';
 import { AmbientLight, BoxGeometry, Mesh, ObjectLoader, PlaneGeometry, ShaderMaterial } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-//fire source: https://opengameart.org/content/animated-fire
-class Fire {
+
+enum BlockType {
+    Stone,
+    Wood,
+    Brick,
+}
+
+class BlockFromSpriteSheet {
     material: ShaderMaterial
     mesh: Mesh
     selectedSpriteX = 0
     selectedSpriteY = 0
 
     doUpdateTick = 0
-    constructor(geometry: PlaneGeometry, scene: THREE.Scene) {
+    constructor(geometry: PlaneGeometry, scene: THREE.Scene, blockType: BlockType, x: number, y: number, z: number) {
    
-        // fire animation from sprite sheet. The sprite sheet is 10x6 tiles, each tile is 64x64 pixels
-        const texture = new THREE.TextureLoader().load( "/textures/fire.png" )
-        texture.magFilter = THREE.LinearMipMapLinearFilter
-        texture.minFilter = THREE.LinearMipMapLinearFilter;
+        // fire animation from sprite sheet. The sprite sheet is 3x1 tiles, each tile is 8x8 pixels
+        const texture = new THREE.TextureLoader().load( "/textures/spritesheet.png" )
+        texture.magFilter = THREE.NearestFilter
+        texture.minFilter = THREE.NearestFilter;
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
      
@@ -28,8 +34,8 @@ class Fire {
             uniforms: {
         
                 "pos": { value: new THREE.Vector3( 0, 0, 0 ) },
-                "spriteSize": { value: new THREE.Vector2( 10.0, 6 ) },
-                "spriteSelected": { value: new THREE.Vector2( 1, 0 ) },
+                "spriteSize": { value: new THREE.Vector2( 3.0, 1.0 ) },
+                "spriteSelected": { value: new THREE.Vector2( blockType * 1, 0 ) },
                 ...uniformTexture
                 },
 
@@ -64,32 +70,8 @@ class Fire {
         } );
 
         this.mesh =  new THREE.Mesh(geometry, this.material)
-        this.mesh.position.set(0,-0.25,0)
+        this.mesh.position.set(x, y, z)
 
-        // on each frame, update the spriteSelected uniform
-        this.mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
-            this.doUpdateTick++
-            if(this.doUpdateTick % 3 == 0){
-
-            // increment the spriteSelected.x value
-            this.selectedSpriteX += 1
-            if (this.selectedSpriteX >= 10) {
-                this.selectedSpriteX = 0
-                this.selectedSpriteY += 1
-                if (this.selectedSpriteY >= 6) {
-                    this.selectedSpriteY = 0
-                }
-            }
-            this.material.uniforms.spriteSelected.value = new THREE.Vector2(this.selectedSpriteX, this.selectedSpriteY)
-            this.mesh.lookAt(camera.position)
-            this.doUpdateTick = 0
-        }
-    }
-
-    const loader = new GLTFLoader();
-    const ambientLight = new AmbientLight(0xFFFFFF);
-    ambientLight.intensity = 2;
-    scene.add( ambientLight );
 
 
     
@@ -101,4 +83,5 @@ class Fire {
 
 }
 
-export default Fire
+export default BlockFromSpriteSheet
+export { BlockType }

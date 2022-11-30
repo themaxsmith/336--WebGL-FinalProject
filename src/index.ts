@@ -2,6 +2,9 @@
 import * as THREE from 'three';
 import { degToRad } from 'three/src/math/MathUtils';
 import Fire from './Fire'
+import DoorWithShaderColor from './Door'
+
+import BlockFromSpriteSheet, { BlockType } from './BlockFromSpriteSheet'
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
 addEventListener('keypress', (event) => {});
@@ -71,12 +74,35 @@ const scene = new THREE.Scene();
 const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
 const material = new THREE.MeshNormalMaterial();
 
-const mesh = new THREE.Mesh( geometry, material );
-scene.add( mesh );
+
 
 const geometry2 = new THREE.PlaneGeometry( 0.5, 0.5 );
 const fire = new Fire(geometry2, scene)
 scene.add(fire.getMesh())
+
+const geometry3 = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
+const brickBlock = new BlockFromSpriteSheet(geometry3, scene, BlockType.Brick, 1, -0.3, 0)
+const woodBlock = new BlockFromSpriteSheet(geometry3, scene, BlockType.Wood, 1.4, -0.3, 0)
+const stoneBlock = new BlockFromSpriteSheet(geometry3, scene, BlockType.Stone, 0.6, -0.3, 0)
+
+scene.add(brickBlock.getMesh())
+scene.add(woodBlock.getMesh())
+scene.add(stoneBlock.getMesh())
+
+// green door
+const geometry4 = new THREE.BoxGeometry( 0.4, 0.8, 0.0 );
+const door = new DoorWithShaderColor(geometry4, scene, 2.5, -.2, 0,  new THREE.Vector3( 0.0, 1.0, 0.0 ))
+scene.add(door.getMesh())
+
+// red door
+const door2 = new DoorWithShaderColor(geometry4, scene, 2, -.2, 0,  new THREE.Vector3( 1.0, 0.0, 0.0 ))
+scene.add(door2.getMesh())
+
+// blue door
+const door3 = new DoorWithShaderColor(geometry4, scene, 3, -.2, 0,  new THREE.Vector3( 0.0, 0.0, 1.0 ))
+scene.add(door3.getMesh())
+
+
 
 let materialArray = [];
 let texture_ft = new THREE.TextureLoader().load( '/textures/isu.jpeg');
@@ -119,9 +145,7 @@ renderer.setAnimationLoop( animation );
 
 function animation( time:any ) {
 
-	mesh.rotation.x = time / 2000;
-	mesh.rotation.y = time / 1000;
-
+	
 	renderer.render( scene, camera );
 
 }

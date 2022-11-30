@@ -34,9 +34,168 @@
                 gl_FragColor = tex;
             }
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@3.2.45/dist/vue.global.min.js"></script>
     </head>
     <body>
         <canvas id="canvas" class="canvasDisplay"></canvas>
+        <div id="overlay">
+            <!-- three views one for each demo, fire animation, sprite sheet, shader color texture  -->
+
+            <div id="app">
+                <h3>CS363 Sprites</h3>
+                <!-- three radio buttons for options -->
+                <div>
+                    <input type="radio" id="fire" name="demo" value="fire" v-model="demo">
+                    <label for="fire">Sprite Animation</label>
+                    <input type="radio" id="sprite" name="demo" value="sprite" v-model="demo">
+                    <label for="sprite">Sprite Sheet</label>
+                    <input type="radio" id="shader" name="demo" value="shader" v-model="demo">
+                    <label for="shader">Shader Colored Textures</label>
+                </div>
+                <!-- switch with each view content -->
+                <div v-if="demo == 'fire'">
+                    <h2>Fire Animation</h2>
+                    <div>
+                        <p>
+                            The Fire Animation has two parts, the first is the sprite. Sprites are a texture assigned a 2d plane and can be made to always face the camera. 
+                            The second part is the animation. The animation is a series of images that are played in sequence to create the illusion of movement.
+                        </p>
+                        <img src="/textures/fire.png" style="width:100%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
+
+                        <h5>Vertex Shader Code:</h5>
+                        <pre> 
+                            <code>
+varying vec2 vUv;
+void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+                            </code>
+                        </pre>
+
+                        <h5>Fragment Shader Code:</h5>
+                        <pre> 
+                            <code>
+uniform vec3 pos;
+uniform vec2 spriteSelected;
+uniform vec2 spriteSize;
+uniform sampler2D texture1;
+varying vec2 vUv;
+void main() {
+    vec2 uv = vUv;
+                                    
+    vec4 tex = texture2D( texture1, uv / spriteSize + (spriteSelected / spriteSize) );
+                    
+    // if the alpha is 0, discard this fragment
+    if (tex.a == 0.0) discard;
+                      
+    gl_FragColor = tex;
+}
+                            </code>
+                        </pre>
+                        <h5>Real World Example:</h5>
+                        <p>Doom uses this concept for its enemy textures and other entities</p>
+                        <img src="/textures/BjlN.gif" style="width:100%" alt="Doom Enemy Texture">
+
+            </div>
+        </div>
+        <div v-if="demo == 'sprite'">
+            <h2>Sprite Sheet</h2>
+            <div>
+                <p>
+                    The Sprite Sheet is a strategy for storing multiple sprites in a single image. This is useful for reducing the number of shaders needed to render a scene.
+
+                </p>
+                <img src="/textures/spritesheet.png" style="width:100%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
+
+                      <h5>Vertex Shader Code:</h5>
+                        <pre> 
+                            <code>
+varying vec2 vUv;
+void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+                            </code>
+                        </pre>
+
+                        <h5>Fragment Shader Code:</h5>
+                        <pre> 
+                            <code>
+uniform vec3 pos;
+uniform vec2 spriteSelected;
+uniform vec2 spriteSize;
+uniform sampler2D texture1;
+varying vec2 vUv;
+void main() {
+    vec2 uv = vUv;
+                                    
+    vec4 tex = texture2D( texture1, uv / spriteSize + (spriteSelected / spriteSize) );
+                    
+    // if the alpha is 0, discard this fragment
+    if (tex.a == 0.0) discard;
+                      
+    gl_FragColor = tex;
+}
+                            </code>
+                        </pre>
+                        <h5>Real World Example:</h5>
+                        <p>Doom uses this concept for its enemy textures and other entities</p>
+                        <img src="/textures/minecraft.png" style="width:100%" alt="Doom Enemy Texture">
+
+            </div>
+        </div>
     </body>
+
+    <script> 
+    
+        const app = Vue.createApp({
+            data() {
+                return {
+                    demo: 'fire',
+                }
+            }
+        })
+        app.mount('#app')
+    
+    </script>
+    <style>
+        #overlay {
+            position: absolute;
+          
+          
+            z-index: 100;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+
+            overflow-y: scroll;
+       
+        }
+        #app{
+            width: 30%;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1em;
+            border-radius: 1em;
+            color: white;
+            margin: 1em;
+        
+            
+        }
+        pre {
+            background-color: #000;
+            color: #fff;
+            padding: .1em;
+            border-radius: 1em;
+        }
+
+        code {
+            white-space: pre-wrap;
+            font-size: smaller;
+
+
+        }
+    </style>
     
 </html>
