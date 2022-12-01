@@ -18,10 +18,15 @@ class Fire {
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
      
-
+        const texture2 = new THREE.TextureLoader().load( "/textures/detail160.png" )
+        texture.magFilter = THREE.LinearMipMapLinearFilter
+        texture.minFilter = THREE.LinearMipMapLinearFilter;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
 
         var uniformTexture = {
             texture1: { type: "t", value:  texture},
+            texture2: {type: "t", value: texture2}
         };
         this.material = new THREE.ShaderMaterial( {
 
@@ -48,16 +53,21 @@ class Fire {
             uniform vec2 spriteSelected;
             uniform vec2 spriteSize;
             uniform sampler2D texture1;
+            uniform sampler2D texture2;
             varying vec2 vUv;
             void main() {
                 vec2 uv = vUv;
                 
+                
                 vec4 tex = texture2D( texture1, uv / spriteSize + (spriteSelected / spriteSize) );
+                vec4 tex2 = texture2D( texture2, uv);
+                
 
                 // if the alpha is 0, discard this fragment
                 if (tex.a == 0.0) discard;
   
-                gl_FragColor = tex;
+
+                gl_FragColor = tex/tex2;
             }
             `,
         
