@@ -58,16 +58,27 @@ class Fire {
             void main() {
                 vec2 uv = vUv;
                 
-                
                 vec4 tex = texture2D( texture1, uv / spriteSize + (spriteSelected / spriteSize) );
-                vec4 tex2 = texture2D( texture2, uv);
-                
 
                 // if the alpha is 0, discard this fragment
                 if (tex.a == 0.0) discard;
-  
+                //gl_FragColor = tex;
+
+
+                // condensed color weight between rgb
+                float v = tex.x + tex.y + tex.z;
+
+                // if color near solid black, discard : removes the blocky black border
+                if(v < 0.1) discard;
+
+                // if color near solid white, dampen the color by reducing slightly
+                if(v > 2.9) tex.xyz*=.85;
+
+                // a texture map to reduce the blockiness/pixelation (center of fire, not edges) of original 2d image
+                vec4 tex2 = texture2D( texture2, uv);
 
                 gl_FragColor = tex/tex2;
+                
             }
             `,
         
