@@ -11,7 +11,7 @@ class Fire {
     selectedSpriteY = 0
 
     doUpdateTick = 0
-    constructor(geometry: PlaneGeometry, scene: THREE.Scene, x: number, z:number, withMap: boolean = true) {
+    constructor(geometry: PlaneGeometry, scene: THREE.Scene, x: number, z:number, withMap: boolean = true, withDiffuse: boolean = false) {
    
         // fire animation from sprite sheet. The sprite sheet is 10x6 tiles, each tile is 64x64 pixels
         const texture = new THREE.TextureLoader().load( "/textures/fire.png" )
@@ -21,6 +21,9 @@ class Fire {
         texture.wrapT = THREE.RepeatWrapping;
      
         const texture2 = new THREE.TextureLoader().load( "/textures/FireNormal3.png" )
+
+        const texture3 = new THREE.TextureLoader().load( "/textures/detail160.png" )
+
         texture.magFilter = THREE.LinearMipMapLinearFilter
         texture.minFilter = THREE.LinearMipMapLinearFilter;
         texture.wrapS = THREE.RepeatWrapping;
@@ -28,7 +31,8 @@ class Fire {
 
         var uniformTexture = {
             texture1: { type: "t", value:  texture},
-            texture2: {type: "t", value: texture2}
+            texture2: {type: "t", value: texture2},
+            texture3: {type: "t", value: texture3}
         };
         this.material = new THREE.ShaderMaterial( {
 
@@ -56,6 +60,7 @@ class Fire {
             uniform vec2 spriteSize;
             uniform sampler2D texture1;
             uniform sampler2D texture2;
+            uniform sampler2D texture3;
             varying vec2 vUv;
             void main() {
                 vec2 uv = vUv;
@@ -64,21 +69,20 @@ class Fire {
 
                 // if the alpha is 0, discard this fragment
                 if (tex.a == 0.0) discard;
-
-                ${!withMap ? 'gl_FragColor = tex;' : ''}
-
-                // condensed color weight between rgb
                 float v = tex.x + tex.y + tex.z;
+              
 
                 // if color near solid black, discard : removes the blocky black border
                 if(v < 0.1) discard;
+                ${!withMap ? 'gl_FragColor = tex;' : ''}
 
-                // if color near solid white, dampen the color by reducing slightly
-                if(v > 2.9) tex.xyz*=.85;
 
                 // a texture map to reduce the blockiness/pixelation (center of fire, not edges) of original 2d image
                 vec4 tex2 = texture2D( texture2, uv / spriteSize + (spriteSelected / spriteSize) );
-
+                vec4 tex3 = texture2D( texture3, uv  );
+                // blend the two textures
+                
+                ${withDiffuse ? 'tex2 = mix(tex2, tex3, 0.5);' : ''}
                 ${withMap ? 'gl_FragColor = tex/tex2;' : ''}
                 
             }

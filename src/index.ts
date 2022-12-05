@@ -77,11 +77,14 @@ const material = new THREE.MeshNormalMaterial();
 
 
 const geometry2 = new THREE.PlaneGeometry( 0.5, 0.5 );
-const fire = new Fire(geometry2, scene, 0, 0);
+const fire = new Fire(geometry2, scene, -0.4, 0);
 scene.add(fire.getMesh())
 
-const fireWithoutMap = new Fire(geometry2, scene, -0.4, 0, false);
+const fireWithoutMap = new Fire(geometry2, scene, -0.8, 0, false);
 scene.add(fireWithoutMap.getMesh())
+
+const fireWithDiffuse   = new Fire(geometry2, scene, 0, 0, true, true);
+scene.add(fireWithDiffuse.getMesh())
 
 const geometry3 = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
 
