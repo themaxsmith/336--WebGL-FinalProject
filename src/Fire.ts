@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import { AmbientLight, BoxGeometry, Mesh, ObjectLoader, PlaneGeometry, ShaderMaterial } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-//fire source: https://opengameart.org/content/animated-fire
+//fire image source: https://opengameart.org/content/animated-fire
+//fire map source: by us (Caleb)
+//the idea for animation is from webglfundamentals.org
 class Fire {
     material: ShaderMaterial
     mesh: Mesh
@@ -18,7 +20,7 @@ class Fire {
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
      
-        const texture2 = new THREE.TextureLoader().load( "/textures/detail160.png" )
+        const texture2 = new THREE.TextureLoader().load( "/textures/FireNormal3.png" )
         texture.magFilter = THREE.LinearMipMapLinearFilter
         texture.minFilter = THREE.LinearMipMapLinearFilter;
         texture.wrapS = THREE.RepeatWrapping;
@@ -75,7 +77,7 @@ class Fire {
                 if(v > 2.9) tex.xyz*=.85;
 
                 // a texture map to reduce the blockiness/pixelation (center of fire, not edges) of original 2d image
-                vec4 tex2 = texture2D( texture2, uv);
+                vec4 tex2 = texture2D( texture2, uv / spriteSize + (spriteSelected / spriteSize) );
 
                 ${withMap ? 'gl_FragColor = tex/tex2;' : ''}
                 
@@ -106,12 +108,6 @@ class Fire {
             this.doUpdateTick = 0
         }
     }
-
-    const loader = new GLTFLoader();
-    const ambientLight = new AmbientLight(0xFFFFFF);
-    ambientLight.intensity = 2;
-    scene.add( ambientLight );
-
 
     
     }
