@@ -14,6 +14,31 @@ We created this project from scratch, but we used the following resources to hel
 I used webglfundamentals.org for the implmentation ideas related to sprite sheet for the shader
 I used the three.js docs for how to implement the custom shader material class.
 I knew vue.js + webpack from the previous project, so no resources were used for that.
-All parts of Fire.ts, Door.ts, and BlockFromSpriteSheet.ts were written by me or caleb
+All parts of Fire.ts, Door.ts, and BlockFromSpriteSheet.ts were written by me or Chris
 Index.ts was written by us, but we used the three.js docs for the implementation. There may be some parts of the code that are similar to the three.js docs. These are cited in code
 Textures are cited in the overlay or/and in the code. Some were created by us, some were found online.
+
+
+Christopher Meyer:
+The following is my own work:
+
+1. Implemented movement using Three.js to manipulate a camera for natural movement (movement-w,a,s,d  up/down-u,y  left/right-q,e)
+
+2. Used Three.js to setup the floor spanning a wide distance with checker pattern for a distance/scaling effect
+
+3. Generated a (heat/normal map) textures for fire animation
+
+4. Rendered the fire animations with varying effects and blended textures to give the fire a non-flat look,
+making them appear to have a degree of depth and realism. With the 3 fires side-by-side, one can clearly see the distinct
+differences based on how each is modified for a cleaner appearance.
+
+4.5: Additional blending methods added to tinker with for different ways to alter the fire.
+
+My sources are as noted above, with a few extra links here, leading to a few sites I used as references as we shifted from
+our project being about portals to texturing and blending on the sprites.
+
+https://cpetry.github.io/NormalMap-Online/
+https://www.rastertek.com/dx11tut20.html
+https://blog.selfshadow.com/publications/blending-in-detail/
+
+I can not, for the life of me, find the 4th website that I used when starting this project. 

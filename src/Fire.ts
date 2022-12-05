@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { AmbientLight, BoxGeometry, Mesh, ObjectLoader, PlaneGeometry, ShaderMaterial } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 //fire image source: https://opengameart.org/content/animated-fire
-//fire map source: by us (Caleb)
+//fire map source: by us (Chris)
 //the idea for animation is from webglfundamentals.org
 class Fire {
     material: ShaderMaterial
@@ -72,10 +72,24 @@ class Fire {
                 float v = tex.x + tex.y + tex.z;
               
 
-                // if color near solid black, discard : removes the blocky black border
-                if(v < 0.1) discard;
+                // // generic blending optional variations
+                // // linear blending
+                // vec4 n1 = texture2D(texture1,   uv / spriteSize + (spriteSelected / spriteSize));
+                // n1.xyz *= 2.0; n1.xyz -=1.0;
+                // vec4 n2 = texture2D(texture2, uv / spriteSize + (spriteSelected / spriteSize));
+                // n2.xyz *= 2.0; n2.xyz -=1.0;
+                // vec4 r  = n1 + n2;
+                // vec4 r = normalize(n1 + n2);
+                // ${!withMap ? 'gl_FragColor = r*0.5 + 0.5;' : ''}
+                
+
+
+
+                // Standard blending
                 ${!withMap ? 'gl_FragColor = tex;' : ''}
 
+                // if color near solid black, discard : removes the blocky black border
+                if(v < 0.1 && gl_FragColor != tex) discard;
 
                 // a texture map to reduce the blockiness/pixelation (center of fire, not edges) of original 2d image
                 vec4 tex2 = texture2D( texture2, uv / spriteSize + (spriteSelected / spriteSize) );
