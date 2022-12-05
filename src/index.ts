@@ -2,6 +2,8 @@
 import * as THREE from 'three';
 import { degToRad } from 'three/src/math/MathUtils';
 import Fire from './Fire'
+import Brick from './Brick'
+
 import DoorWithShaderColor from './Door'
 import DoorWithShaderColorGradient from './GradientDoor'
 import BlockFromSpriteSheet, { BlockType } from './BlockFromSpriteSheet'
@@ -123,6 +125,12 @@ const colors = [
 ]
 const door5 = new DoorWithShaderColorGradient(geometry4, scene, 4, -.2, 0,  colors)
 scene.add(door5.getMesh())
+
+const geometryBrick = new THREE.PlaneGeometry( 5, 5, 5 );
+const brick = new Brick(geometryBrick, scene, 8, 0, true)
+scene.add(brick.getMesh())
+
+
 
 
 
