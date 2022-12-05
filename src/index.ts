@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { degToRad } from 'three/src/math/MathUtils';
 import Fire from './Fire'
 import DoorWithShaderColor from './Door'
-
+import DoorWithShaderColorGradient from './GradientDoor'
 import BlockFromSpriteSheet, { BlockType } from './BlockFromSpriteSheet'
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
@@ -108,6 +108,22 @@ scene.add(door2.getMesh())
 // blue door
 const door3 = new DoorWithShaderColor(geometry4, scene, 3, -.2, 0,  new THREE.Vector3( 0.0, 0.0, 1.0 ))
 scene.add(door3.getMesh())
+
+// brown door
+const door4 = new DoorWithShaderColor(geometry4, scene, 3.5, -.2, 0,  new THREE.Vector3( 0.5, 0.2, 0.0 ))
+scene.add(door4.getMesh())
+
+
+// gradient door
+const colors = [
+    new THREE.Vector3( 1.0, 0.0, 0.0 ),
+    new THREE.Vector3( 0.0, 1.0, 0.0 ),
+    new THREE.Vector3( 0.0, 0.0, 1.0 ),
+    new THREE.Vector3( 1.0, 1.0, 0.0 ),
+]
+const door5 = new DoorWithShaderColorGradient(geometry4, scene, 4, -.2, 0,  colors)
+scene.add(door5.getMesh())
+
 
 
 

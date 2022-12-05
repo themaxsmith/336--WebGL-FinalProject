@@ -76,7 +76,7 @@
                     <div>
                         <p>
                             The Fire Animation has two parts, the first is the sprite. Sprites are a texture assigned a 2d plane and can be made to always face the camera. 
-                            The second part is the animation. The animation is a series of images that are played in sequence to create the illusion of movement. The second fire showcases when a normal map is applied.
+                            The second part is the animation. The animation is a series of images that are played in sequence to create the illusion of movement. The second fire showcases when a normal map is applied. The third fire adds a noise normal map to create a even more realistic fire effect. 
                         </p>
                         <h5>fire.png (texture1):</h5>
 
@@ -84,6 +84,10 @@
                         <h5>FireNormal.png (texture2):</h5>
 
                         <img src="/textures/FireNormal.png" style="width:100%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
+
+                        <h5>Noise Texture (texture3): (mixed 50% / 50% with fire normal on last fire)</h5>
+
+                        <img src="/textures/detail160.png" style="width:50%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
                         <h5>Vertex Shader Code:</h5>
                         <pre> 
                             <code>
@@ -103,6 +107,7 @@ uniform vec2 spriteSelected;
 uniform vec2 spriteSize;
 uniform sampler2D texture1;
 uniform sampler2D texture2;
+uniform sampler2D texture3;
 varying vec2 vUv;
 void main() {
     vec2 uv = vUv;
@@ -121,8 +126,11 @@ void main() {
                 
                     
     // a texture map to reduce the blockiness/pixelation (center of fire, not edges) of original 2d image
-    vec4 tex2 = texture2D( texture2, uv);
-                    
+    vec4 tex2 = texture2D( texture2, uv / spriteSize + (spriteSelected / spriteSize));
+    vec4 tex3 = texture2D( texture3, uv  );
+    // blend the two textures
+    
+    ${withDiffuse ? 'tex2 = mix(tex2, tex3, 0.5);' : ''}           
     ${withMap ? 'gl_FragColor = tex/tex2;' : ''}
                                     
 }
@@ -254,7 +262,33 @@ void main() {
 }
                             </code>
                         </pre>
-                  
+                        <h5>Gradient Fragment Shader Code:</h5>
+
+                        <pre>
+                            <code>
+uniform vec3 pos;
+uniform vec3 spriteColorTopLeft;
+uniform vec3 spriteColorTopRight;
+uniform vec3 spriteColorBottomLeft;
+uniform vec3 spriteColorBottomRight;
+uniform sampler2D texture1;
+varying vec2 vUv;
+void main() {
+   vec2 uv = vUv;
+                                    
+    vec4 tex = texture2D( texture1, uv);
+                    
+    // if the alpha is 0, discard this fragment
+                      
+    if (tex.a == 0.0) discard;
+                    
+    // create a gradient from the 4 colors
+    vec3 color = mix(mix(spriteColorTopLeft, spriteColorTopRight, uv.x), mix(spriteColorBottomLeft, spriteColorBottomRight, uv.x), uv.y);
+     gl_FragColor = tex * vec4(color, 1.0);
+                    
+}
+                            </code>
+                        </pre>
                     </div> 
                 </div>
     </body>
