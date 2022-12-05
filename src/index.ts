@@ -109,6 +109,7 @@ scene.add(door3.getMesh())
 
 
 let materialArray = [];
+// Source: Public Domain image of Iowa State University
 let texture_ft = new THREE.TextureLoader().load( '/textures/isu.jpeg');
 let texture_bk = new THREE.TextureLoader().load( '/textures/isu.jpeg');
 let texture_up = new THREE.TextureLoader().load( '/textures/isu.jpeg');

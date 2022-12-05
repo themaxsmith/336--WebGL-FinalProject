@@ -8,3 +8,5 @@ Here are the parts I worked on:
 6. Completed the Fire uniform update and sprite look at camera functions
 7. Implemented the overlay document (using Vue.js) and explanation of the project
 8. Found real-world examples of the demos and added them to the overlay document
+
+Sources: Cited in the code and in the overlay document, but the main one is the three.js docs + course notes
