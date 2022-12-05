@@ -77,10 +77,14 @@ const material = new THREE.MeshNormalMaterial();
 
 
 const geometry2 = new THREE.PlaneGeometry( 0.5, 0.5 );
-const fire = new Fire(geometry2, scene)
+const fire = new Fire(geometry2, scene, 0, 0);
 scene.add(fire.getMesh())
 
+const fireWithoutMap = new Fire(geometry2, scene, -0.4, 0, false);
+scene.add(fireWithoutMap.getMesh())
+
 const geometry3 = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
+
 const brickBlock = new BlockFromSpriteSheet(geometry3, scene, BlockType.Brick, 1, -0.3, 0)
 const woodBlock = new BlockFromSpriteSheet(geometry3, scene, BlockType.Wood, 1.4, -0.3, 0)
 const stoneBlock = new BlockFromSpriteSheet(geometry3, scene, BlockType.Stone, 0.6, -0.3, 0)
@@ -119,6 +123,7 @@ materialArray.push(new THREE.MeshBasicMaterial( { map: texture_dn }));
 materialArray.push(new THREE.MeshBasicMaterial( { map: texture_rt }));
 materialArray.push(new THREE.MeshBasicMaterial( { map: texture_lf }));
    
+// Source: used three.js documentation + examples to understand how to create skybox
 for (let i = 0; i < 6; i++)
   materialArray[i].side = THREE.BackSide;
    

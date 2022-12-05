@@ -3,9 +3,9 @@ import { AmbientLight, BoxGeometry, Mesh, ObjectLoader, PlaneGeometry, ShaderMat
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 enum BlockType {
-    Stone,
-    Wood,
-    Brick,
+    Stone = 0,
+    Wood = 1,
+    Brick = 2,
 }
 
 class BlockFromSpriteSheet {

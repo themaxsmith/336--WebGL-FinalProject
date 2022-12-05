@@ -9,7 +9,7 @@ class Fire {
     selectedSpriteY = 0
 
     doUpdateTick = 0
-    constructor(geometry: PlaneGeometry, scene: THREE.Scene) {
+    constructor(geometry: PlaneGeometry, scene: THREE.Scene, x: number, z:number, withMap: boolean = true) {
    
         // fire animation from sprite sheet. The sprite sheet is 10x6 tiles, each tile is 64x64 pixels
         const texture = new THREE.TextureLoader().load( "/textures/fire.png" )
@@ -62,8 +62,8 @@ class Fire {
 
                 // if the alpha is 0, discard this fragment
                 if (tex.a == 0.0) discard;
-                //gl_FragColor = tex;
 
+                ${!withMap ? 'gl_FragColor = tex;' : ''}
 
                 // condensed color weight between rgb
                 float v = tex.x + tex.y + tex.z;
@@ -77,7 +77,7 @@ class Fire {
                 // a texture map to reduce the blockiness/pixelation (center of fire, not edges) of original 2d image
                 vec4 tex2 = texture2D( texture2, uv);
 
-                gl_FragColor = tex/tex2;
+                ${withMap ? 'gl_FragColor = tex/tex2;' : ''}
                 
             }
             `,
@@ -85,7 +85,7 @@ class Fire {
         } );
 
         this.mesh =  new THREE.Mesh(geometry, this.material)
-        this.mesh.position.set(0,-0.25,0)
+        this.mesh.position.set(x,-0.25,z)
 
         // on each frame, update the spriteSelected uniform
         this.mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {

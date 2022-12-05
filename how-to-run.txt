@@ -1,0 +1,5 @@
+You can run this project by:
+1. Having node.js installed
+2. Running `npm install` in the project directory
+3. Running `npm run start` in the project directory
+4. Opening `http://localhost:3000` in your browser
