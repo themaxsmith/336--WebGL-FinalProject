@@ -52,6 +52,8 @@
                     <label for="sprite">Sprite Sheet</label>
                     <input type="radio" id="shader" name="demo" value="shader" v-model="demo">
                     <label for="shader">Shader Colored Textures</label>
+                    <input type="radio" id="parallax" name="demo" value="parallax" v-model="demo">
+                    <label for="parallax">Parallax mapping</label>
                     <input type="radio" id="About" name="demo" value="About" v-model="demo">
                     <label for="About">About</label>
                 </div>
@@ -76,18 +78,13 @@
                     <div>
                         <p>
                             The Fire Animation has two parts, the first is the sprite. Sprites are a texture assigned a 2d plane and can be made to always face the camera. 
-                            The second part is the animation. The animation is a series of images that are played in sequence to create the illusion of movement. The second fire showcases when a normal map is applied. The third fire adds a noise normal map to create a even more realistic fire effect. 
+                            The second part is the animation. The animation is a series of images that are played in sequence to create the illusion of movement.
+                            The second & third fires uses 3d blending effects applied to the sprite to create a more realistic fire effect.
                         </p>
                         <h5>fire.png (texture1):</h5>
 
                         <img src="/textures/fire.png" style="width:100%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
-                        <h5>FireNormal.png (texture2):</h5>
-
-                        <img src="/textures/FireNormal.png" style="width:100%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
-
-                        <h5>Noise Texture (texture3): (mixed 50% / 50% with fire normal on last fire)</h5>
-
-                        <img src="/textures/detail160.png" style="width:50%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
+      
                         <h5>Vertex Shader Code:</h5>
                         <pre> 
                             <code>
@@ -139,7 +136,13 @@ void main() {
                         <h5>Each Frame Updates:</h5>
                         <p>1. Update to look at camera<br />
                         2. Update uniform to next sprite via spriteSelected (x,y) uniform</p>
+                        <h5>FireNormal.png (texture2):</h5>
 
+                        <img src="/textures/FireNormal.png" style="width:100%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
+
+                        <h5>Noise Texture (texture3): (mixed 50% / 50% with fire normal on last fire)</h5>
+
+                        <img src="/textures/detail160.png" style="width:50%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
                  
                         <h5>Real World Example:</h5>
                         <p>Doom uses this concept for its enemy textures and other entities</p>
@@ -211,7 +214,7 @@ enum BlockType {
                         <p>Minecraft uses this concept for its block textures that makeup the entire game</p>
                         <img src="/textures/minecraft.png" style="width:100%" alt="Doom Enemy Texture">
                         <img src="/textures/minecraftInGame.gif" style="width:100%" alt="Doom Enemy Texture">
-                        <!-- sources -->
+        
                         <h5>Sources:</h5>
                         <ul>
                             <li><a href="https://support.bluestacks.com/hc/vi/articles/6462696716301-C%C3%A1ch-%C4%91%E1%BB%83-c%C3%B3-tr%E1%BA%A3i-nghi%E1%BB%87m-ch%C6%A1i-game-gi%E1%BB%91ng-PC-trong-Minecraft-tr%C3%AAn-BlueStacks-5">Minecraft In-Game (From BlueStacks)</a></li>
@@ -289,8 +292,103 @@ void main() {
 }
                             </code>
                         </pre>
+                        <h5>Real World Example:</h5>
+                        <p>Used when games want to color textures on the fly. Popular with games that have user customizable skins for modals.</p>
+                        <h5>Sources:</h5>
+                        <ul>
+                            <p> Used in course knowledge</p>
+                        </ul> 
                     </div> 
                 </div>
+                    <div v-if="demo == 'parallax'">
+                        <h2>Parallax Mapping </h2> 
+                        <div>
+                            <p>
+Parallax mapping is a technique used to create the illusion of depth in a 2D image or game. It is most commonly used to add depth to textures on 3D models. The technique works by offsetting the texture coordinates based on angle of the camera. This creates the illusion of depth. The technique is most commonly used in games to add depth to textures on 3D models. The technique works by offsetting the texture coordinates based on angle of the camera. This creates the illusion of depth.
+A very common example is the brick wall texture. The bricks appear to be closer to the camera than the mortar between the bricks due to the illusion.
+                            </p>
+                            <h5>brick-wayfair.png (texture1):</h5>
+
+                            <img src="/textures/brick-wayfair.png" style="width:100%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
+                            <h5>brick-wayfair.png (texture1):</h5>
+
+                            <img src="/textures/brick-invert-greyscale.png" style="width:100%;   image-rendering: pixelated; " alt="Doom Enemy Texture">
+                                  <h5>Vertex Shader Code:</h5>
+                                    <pre> 
+                                        <code>
+ varying vec2 vUv;
+ varying vec3 vNormal;
+ varying vec3 vViewPosition;
+ void main() {
+ vUv = uv;
+ vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+ vViewPosition = -mvPosition.xyz;
+ vNormal = normalize( normalMatrix * normal );
+ gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+ }
+                                        </code>
+                                    </pre>
+    
+                                    <h5>Fragment Shader Code:</h5>
+    
+                                    <pre>
+                                        <code>
+                                             uniform vec3 pos;
+
+ uniform sampler2D texture1;
+ uniform sampler2D texture2;
+ uniform sampler2D texture3;
+ varying vec2 vUv;
+ varying vec3 vNormal;
+ uniform float parallaxScale;
+ varying vec3 vViewPosition;
+ vec2 parallaxMap( in vec3 V ) {
+ float height = texture2D( texture2, vUv).r;
+ vec2 texCoordOffset = parallaxScale * V.xy * height;
+ return vUv - texCoordOffset;
+ }
+
+ vec2 visualApUV( vec3 surfacePosition, vec3 surfNormal, vec3 viewPosition ) {
+
+ vec2 texDx = dFdx( vUv );
+ vec2 texDy = dFdy( vUv );
+
+ vec3 vSigmaX = dFdx( surfacePosition );
+ vec3 vSigmaY = dFdy( surfacePosition );
+ vec3 vR1 = cross( vSigmaY, surfNormal );
+ vec3 vR2 = cross( surfNormal, vSigmaX );
+ float fDet = dot( vSigmaX, vR1 );
+
+ vec2 vProjVscr = ( 1.0 / fDet ) * vec2( dot( vR1, viewPosition ), dot( vR2, viewPosition ) );
+ vec3 vProjVtex;
+ vProjVtex.xy = texDx * vProjVscr.x + texDy * vProjVscr.y;
+ vProjVtex.z = dot( surfNormal, viewPosition );
+
+ return parallaxMap( vProjVtex );
+ }
+
+ 
+
+ void main() {
+ vec2 mapUv = visualApUV( -vViewPosition, normalize( vNormal ), normalize( vViewPosition ) );
+gl_FragColor = texture2D( texture1, mapUv );
+ 
+ }
+                                        </code>
+                                    </pre>
+                            <h5>Real World Example:</h5>
+                            <p>Used in tons of modern game engines to add depth to textures on 3D models without a big cost. Made popular by the PS3 era of gaming.</p>
+            <img src="https://learnopengl.com/img/advanced-lighting/parallax_mapping_depth.png" style="width:100%; background-color: aliceblue; border-radius: 1em;  " alt="Doom Enemy Texture">
+                            <h5>Sources:</h5>
+                <ul>    
+                    <p> Brick image found on wayfair store</p>
+                    <p> Brick inverse was generated in photoshop</p>
+                    <a href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Research + eye image</a><br />
+                    <a href="https://softsrc.cc/Public/three.js/examples/webgl_materials_parallaxmap.html">Parallax Three.js (Heavily based on)</a>
+                        </div>
+</div>
+</div>        
+</div>
     </body>
 
     <script> 

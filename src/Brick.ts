@@ -17,13 +17,13 @@ class Fire {
         const texture = new THREE.TextureLoader().load( "/textures/brick-wayfair.png" )
       
      
-        const texture2 = new THREE.TextureLoader().load( "/textures/image.png" )
+        const texture2 = new THREE.TextureLoader().load( "/textures/brick-invert-greyscale.png" )
 
 
 
         const texture3 = new THREE.TextureLoader().load( "/textures/detail160.png" )
-// research done from: https://softsrc.cc/Public/three.js/examples/js/shaders/ParallaxShader.js
-
+// research done from: https://softsrc.cc/Public/three.js/examples/webgl_materials_parallaxmap.html
+// research done from  https://learnopengl.com/Advanced-Lighting/Parallax-Mapping
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
 
