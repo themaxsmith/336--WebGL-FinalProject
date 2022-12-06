@@ -15,8 +15,9 @@ I used webglfundamentals.org for the implmentation ideas related to sprite sheet
 I used the three.js docs for how to implement the custom shader material class.
 I knew vue.js + webpack from the previous project, so no resources were used for that.
 All parts of Fire.ts, Door.ts, and BlockFromSpriteSheet.ts were written by me or Chris
-Index.ts was written by us, but we used the three.js docs for the implementation. There may be some parts of the code that are similar to the three.js docs. These are cited in code
-Textures are cited in the overlay or/and in the code. Some were created by us, some were found online.
+Parallax was based on research + shader code snippets: https://learnopengl.com/Advanced-Lighting/Parallax-Mapping & https://softsrc.cc/Public/three.js/examples/webgl_materials_parallaxmap.html
+Index.ts was written by us, but we used the three.js docs for the implementation. There may be some parts of the code that are similar to the three.js docs. These are cited in-code
+Textures are cited in the overlay or/and in the code. Some were created by us, some were found online. All textures are cited in the overlay document.
 
 
 Christopher Meyer:
