@@ -127,7 +127,7 @@ const door5 = new DoorWithShaderColorGradient(geometry4, scene, 4, -.2, 0,  colo
 scene.add(door5.getMesh())
 
 const geometryBrick = new THREE.PlaneGeometry( 5, 5, 5 );
-const brick = new Brick(geometryBrick, scene, 8, 0, true)
+const brick = new Brick(geometryBrick, scene, 7, 0, true)
 scene.add(brick.getMesh())
 
 
