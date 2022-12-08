@@ -22,8 +22,8 @@ class Fire {
 
 
         const texture3 = new THREE.TextureLoader().load( "/textures/detail160.png" )
-// research done from: https://softsrc.cc/Public/three.js/examples/webgl_materials_parallaxmap.html
 // research done from  https://learnopengl.com/Advanced-Lighting/Parallax-Mapping
+// research done from: https://softsrc.cc/Public/three.js/examples/webgl_materials_parallaxmap.html
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
 
@@ -51,8 +51,8 @@ class Fire {
             varying vec3 vViewPosition;
             void main() {
                 vUv = uv;
-                vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-                vViewPosition = -mvPosition.xyz;
+                vec4 mPosition = modelViewMatrix * vec4( position, 1.0 );
+                vViewPosition = -mPosition.xyz;
                 vNormal = normalize( normalMatrix * normal );
                 gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
             }
@@ -68,25 +68,27 @@ class Fire {
             varying vec3 vNormal;
             uniform float parallaxScale;
             varying vec3 vViewPosition;
+
             vec2 parallaxMap( in vec3 V ) {
                 float height = texture2D( texture2, vUv).r;
                 vec2 texCoordOffset = parallaxScale * V.xy * height;
                 return vUv - texCoordOffset;
-                }
+            }
 
             vec2 visualApUV( vec3 surfacePosition, vec3 surfNormal, vec3 viewPosition ) {
 
-        vec2 texDx = dFdx( vUv );
+           vec3 vProjVtex;
+           vec2 texDx = dFdx( vUv );
            vec2 texDy = dFdy( vUv );
 
            vec3 vSigmaX = dFdx( surfacePosition );
            vec3 vSigmaY = dFdy( surfacePosition );
            vec3 vR1 = cross( vSigmaY, surfNormal );
            vec3 vR2 = cross( surfNormal, vSigmaX );
-           float fDet = dot( vSigmaX, vR1 );
 
-           vec2 vProjVscr = ( 1.0 / fDet ) * vec2( dot( vR1, viewPosition ), dot( vR2, viewPosition ) );
-           vec3 vProjVtex;
+           float fDetDot = dot( vSigmaX, vR1 );
+
+           vec2 vProjVscr =  vec2( dot( vR1, viewPosition ) * ( 1.0 / fDetDot ), dot( vR2, viewPosition ) );
            vProjVtex.xy = texDx * vProjVscr.x + texDy * vProjVscr.y;
            vProjVtex.z = dot( surfNormal, viewPosition );
 
